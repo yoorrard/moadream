@@ -296,12 +296,27 @@ function CreateProjectModal({
         try {
             const supabase = createClient();
 
+            // Debug: Check if session exists
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            console.log('Session check:', { session: !!session, userId, sessionUserId: session?.user?.id, sessionError });
+
+            if (!session) {
+                throw new Error('세션이 없습니다. 다시 로그인해주세요.');
+            }
+
+            if (session.user.id !== userId) {
+                console.warn('User ID mismatch:', { passedUserId: userId, sessionUserId: session.user.id });
+            }
+
             // 6자리 코드 생성
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             let code = '';
             for (let i = 0; i < 6; i++) {
                 code += chars.charAt(Math.floor(Math.random() * chars.length));
             }
+
+            // Use session user ID directly instead of passed userId
+            const actualUserId = session.user.id;
 
             const { data, error: insertError } = await supabase
                 .from('projects')
@@ -311,7 +326,7 @@ function CreateProjectModal({
                         code,
                         current_classes: parseInt(currentClasses),
                         target_classes: parseInt(targetClasses),
-                        leader_id: userId,
+                        leader_id: actualUserId,
                     },
                 ])
                 .select()
