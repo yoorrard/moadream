@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 import { User } from '@/types';
@@ -24,14 +25,7 @@ export default function Header({ user, authUser, onLogout }: HeaderProps) {
             <div className={styles.container}>
                 <Link href="/" className={styles.logo}>
                     <div className={styles.logoIcon}>
-                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                            <rect width="28" height="28" rx="8" fill="currentColor" />
-                            <path
-                                d="M8 20V8L14 12L20 8V20L14 16L8 20Z"
-                                fill="white"
-                                fillOpacity="0.9"
-                            />
-                        </svg>
+                        <Image src="/logo.jpg" alt="모아드림 로고" width={28} height={28} style={{ borderRadius: '8px' }} />
                     </div>
                     <span className={styles.logoText}>모아드림</span>
                 </Link>

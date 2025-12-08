@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -9,14 +10,7 @@ export default function Home() {
         <div className={styles.headerContent}>
           <div className={styles.logo}>
             <div className={styles.logoIcon}>
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="currentColor" />
-                <path
-                  d="M8 24V8L16 13L24 8V24L16 19L8 24Z"
-                  fill="white"
-                  fillOpacity="0.9"
-                />
-              </svg>
+              <Image src="/logo.jpg" alt="모아드림 로고" width={32} height={32} style={{ borderRadius: '8px' }} />
             </div>
             <span className={styles.logoText}>모아드림</span>
           </div>
@@ -178,14 +172,7 @@ export default function Home() {
           <div className={styles.footerTop}>
             <div className={styles.footerLogo}>
               <div className={styles.logoIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <rect width="24" height="24" rx="6" fill="currentColor" />
-                  <path
-                    d="M6 18V6L12 9.5L18 6V18L12 14.5L6 18Z"
-                    fill="white"
-                    fillOpacity="0.9"
-                  />
-                </svg>
+                <Image src="/logo.jpg" alt="모아드림 로고" width={24} height={24} style={{ borderRadius: '6px' }} />
               </div>
               <span>모아드림</span>
             </div>
