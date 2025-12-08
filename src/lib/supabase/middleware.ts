@@ -39,6 +39,18 @@ export async function updateSession(request: NextRequest) {
         // Continue without user - will be treated as unauthenticated
     }
 
+    // Protected routes
+    const protectedRoutes = ['/dashboard', '/project'];
+    const isProtectedRoute = protectedRoutes.some((route) =>
+        request.nextUrl.pathname.startsWith(route)
+    );
+
+    if (isProtectedRoute && !user) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/login';
+        return NextResponse.redirect(url);
+    }
+
     // Redirect logged-in users away from auth pages and landing page
     const authRoutes = ['/', '/login'];
     const isAuthRoute = authRoutes.some((route) =>

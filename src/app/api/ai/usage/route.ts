@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 
 const AI_ASSIGN_LIMIT = 1; // 프로젝트당 AI 자동배정 횟수 제한
 const AI_ANALYZE_LIMIT = 2; // 프로젝트당 AI 분석 횟수 제한
@@ -8,39 +8,30 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const projectId = searchParams.get('projectId');
+        const userId = searchParams.get('userId');
 
-        // userId는 이제 신뢰할 수 없는 클라이언트 파라미터가 아닌, 세션에서 가져옵니다.
-        const supabase = await createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-        if (authError || !user) {
+        if (!projectId || !userId) {
             return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
-        }
-
-        if (!projectId) {
-            return NextResponse.json(
-                { error: 'projectId is required' },
+                { error: 'projectId and userId are required' },
                 { status: 400 }
             );
         }
 
-        // 프로젝트 멤버십 확인 (선택 사항이지만 권장됨)
-        // 여기서는 간단히 ai_usage 테이블의 RLS 정책에 의존하거나, 아래처럼 명시적으로 user_id 필터를 사용합니다.
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xbxneekbhmabnpxulglt.supabase.co',
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhieG5lZWtiaG1hYm5weHVsZ2x0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ5MzMxMjcsImV4cCI6MjA4MDUwOTEyN30.xbHpdCxb29c7QZ6RTxrGaVp2Q0HjdRbxZe16b06QXZs'
+        );
 
         // AI 자동배정 사용 횟수 조회
         const { data: assignUsage, error: assignError } = await supabase
             .from('ai_usage')
             .select('id')
             .eq('project_id', projectId)
-            .eq('user_id', user.id) // 세션 유저 ID 사용
+            .eq('user_id', userId)
             .eq('usage_type', 'assign');
 
         if (assignError) {
             console.error('Assign usage check error:', assignError);
-            throw assignError;
         }
 
         // AI 분석 사용 횟수 조회
@@ -48,12 +39,11 @@ export async function GET(request: NextRequest) {
             .from('ai_usage')
             .select('id')
             .eq('project_id', projectId)
-            .eq('user_id', user.id) // 세션 유저 ID 사용
+            .eq('user_id', userId)
             .eq('usage_type', 'analyze');
 
         if (analyzeError) {
             console.error('Analyze usage check error:', analyzeError);
-            throw analyzeError;
         }
 
         const assignUsed = assignUsage?.length || 0;

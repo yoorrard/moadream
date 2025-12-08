@@ -1,43 +1,30 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { Student, Relationship } from '@/types';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 
 const AI_ASSIGN_LIMIT = 1; // 프로젝트당 AI 자동배정 횟수 제한
 
 export async function POST(request: NextRequest) {
     try {
-        const { students, relationships, targetClasses, projectId } = await request.json();
+        const { students, relationships, targetClasses, projectId, userId } = await request.json();
 
-        // 1. 인증된 Supabase 클라이언트 생성
-        const supabase = await createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Supabase 클라이언트 생성 (서버 사이드)
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xbxneekbhmabnpxulglt.supabase.co',
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhieG5lZWtiaG1hYm5weHVsZ2x0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ5MzMxMjcsImV4cCI6MjA4MDUwOTEyN30.xbHpdCxb29c7QZ6RTxrGaVp2Q0HjdRbxZe16b06QXZs'
+        );
 
-        if (authError || !user) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
-        }
-
-        if (!projectId) {
-            return NextResponse.json(
-                { error: 'ProjectId is required' },
-                { status: 400 }
-            );
-        }
-
-        // 2. 사용 횟수 확인 (RLS 적용된 상태에서 조회)
+        // 사용 횟수 확인
         const { data: usageData, error: usageError } = await supabase
             .from('ai_usage')
             .select('id')
             .eq('project_id', projectId)
-            .eq('user_id', user.id) // 세션 유저 ID 강제
+            .eq('user_id', userId)
             .eq('usage_type', 'assign');
 
         if (usageError) {
             console.error('Usage check error:', usageError);
-            throw usageError;
         }
 
         const usedCount = usageData?.length || 0;
@@ -53,13 +40,6 @@ export async function POST(request: NextRequest) {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
         const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-
-        // Anonymize student names to protect PII
-        const anonymizedStudents = students.map((s: Student, index: number) => ({
-            ...s,
-            name: `Student ${index + 1}`
-        }));
-
         const prompt = `
 당신은 초등학교 반편성 전문가입니다. 다음 학생들을 ${targetClasses}개의 진학 학급에 최적으로 배정해주세요.
 
@@ -71,7 +51,7 @@ export async function POST(request: NextRequest) {
 5. 특이사항 분산: 쌍둥이는 분리, 특별관리 학생은 분산합니다.
 
 ## 학생 데이터
-${JSON.stringify(anonymizedStudents, null, 2)}
+${JSON.stringify(students, null, 2)}
 
 ## 관계 데이터 (student_id와 target_student_id 사이의 관계)
 ${JSON.stringify(relationships, null, 2)}
@@ -99,21 +79,17 @@ ${JSON.stringify(relationships, null, 2)}
 
         const aiResult = JSON.parse(jsonMatch[0]);
 
-        // 3. 사용 기록 저장 (인증된 사용자로 저장)
+        // 사용 기록 저장
         const { error: insertError } = await supabase
             .from('ai_usage')
             .insert({
                 project_id: projectId,
-                user_id: user.id, // 세션 유저 ID 강제
+                user_id: userId,
                 usage_type: 'assign'
             });
 
         if (insertError) {
             console.error('Usage insert error:', insertError);
-            // 기록 저장 실패해도 결과는 반환? 아니면 에러? 
-            // 여기서는 사용자가 이득을 볼 수 없게 에러 처리가 안전하지만, AI 비용은 이미 발생함.
-            // 클라이언트에게 알리기 위해 에러를 로깅하고 진행하거나 에러를 던질 수 있음. 
-            // 일단 로깅만 하고 진행 (사용자 경험 우선)
         }
 
         return NextResponse.json({ ...aiResult, remaining: remaining - 1 });

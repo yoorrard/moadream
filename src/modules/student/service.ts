@@ -6,7 +6,7 @@ export async function getStudents(projectId: string): Promise<Student[]> {
 
     const { data, error } = await supabase
         .from('students')
-        .select('id, project_id, student_number, name, current_class, original_class, target_class, gender, behaviors, special_notes, custom_behavior, custom_special_note, memo, created_by, created_at')
+        .select('*')
         .eq('project_id', projectId)
         .order('current_class', { ascending: true })
         .order('name', { ascending: true });
@@ -20,7 +20,7 @@ export async function getStudentsByClass(projectId: string, classNumber: number)
 
     const { data, error } = await supabase
         .from('students')
-        .select('id, project_id, student_number, name, current_class, original_class, target_class, gender, behaviors, special_notes, custom_behavior, custom_special_note, memo, created_by, created_at')
+        .select('*')
         .eq('project_id', projectId)
         .eq('current_class', classNumber)
         .order('name', { ascending: true });
