@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
             behaviors: s.behaviors,
             special_notes: s.special_notes,
             current_class: s.current_class,
+            student_rank: s.student_rank || null, // 석차 정보 포함
             name: `학생 ${index + 1}`, // 가명 처리
             // 제외: name, student_number, created_by, created_at, project_id, etc.
         }));
@@ -84,6 +85,7 @@ export async function POST(request: NextRequest) {
 3. 갈등 관계 분리: conflict 관계인 학생들은 다른 학급에 배치합니다.
 4. 우호 관계 고려: friendly 관계는 가능하면 같은 학급에 배치하되, 필수는 아닙니다.
 5. 특이사항 분산: 쌍둥이는 분리, 특별관리 학생은 분산합니다.
+6. 석차 분산: 석차가 있는 학생들은 각 학급에 고르게 분포되어야 합니다 (상위권/중위권/하위권 균형).
 
 ## 학생 데이터 (개인정보 보호를 위해 마스킹됨)
 ${JSON.stringify(maskedStudents, null, 2)}

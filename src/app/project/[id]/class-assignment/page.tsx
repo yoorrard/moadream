@@ -562,6 +562,9 @@ function StudentCard({
                 <span className={`${styles.genderBadge} ${styles[student.gender]}`}>
                     {student.gender === 'male' ? '남' : '여'}
                 </span>
+                {student.student_rank && (
+                    <span className={styles.studentRank}>#{student.student_rank}</span>
+                )}
                 {student.behaviors?.slice(0, 2).map((b) => (
                     <span key={b} className={styles.behaviorTag}>
                         {BEHAVIOR_OPTIONS.find((o) => o.id === b)?.label}

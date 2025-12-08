@@ -122,6 +122,16 @@ export async function POST(request: NextRequest) {
                 });
             });
 
+            // 석차 통계 계산
+            const rankedStudents = classStudents.filter(s => s.student_rank != null && s.student_rank > 0);
+            const ranks = rankedStudents.map(s => s.student_rank as number);
+            const rankStats = ranks.length > 0 ? {
+                count: ranks.length,
+                min: Math.min(...ranks),
+                max: Math.max(...ranks),
+                avg: Math.round(ranks.reduce((a, b) => a + b, 0) / ranks.length * 10) / 10,
+            } : null;
+
             return {
                 classNumber: parseInt(classNum),
                 total: classStudents.length,
@@ -132,6 +142,7 @@ export async function POST(request: NextRequest) {
                 conflictCount: conflictsInClass.length,
                 friendlyCount: friendliesInClass.length,
                 difficultyScore: totalDifficultyScore,
+                rankStats,
             };
         });
 
@@ -157,7 +168,8 @@ ${JSON.stringify(SPECIAL_NOTES_OPTIONS.map(n => ({ id: n.id, label: n.label, sco
 3. 특이 사항 분포 분석
 4. 갈등/우호 관계 현황 분석
 5. 각 학급의 지도 난이도 비교
-6. 종합 평가 및 권장사항
+6. 석차 분포 균형 분석 (석차가 있는 학생들의 학급별 분포)
+7. 종합 평가 및 권장사항
 
 ## 응답 형식 (반드시 이 JSON 형식으로만 응답)
 {
@@ -168,6 +180,7 @@ ${JSON.stringify(SPECIAL_NOTES_OPTIONS.map(n => ({ id: n.id, label: n.label, sco
       "behaviorAnalysis": "행동 특성 분석",
       "specialNoteAnalysis": "특이사항 분석",
       "relationshipAnalysis": "관계 분석",
+      "rankAnalysis": "석차 분포 분석 (석차 데이터가 있는 경우)",
       "difficultyLevel": "상/중/하",
       "summary": "학급 요약 (2-3문장)"
     }
@@ -176,6 +189,7 @@ ${JSON.stringify(SPECIAL_NOTES_OPTIONS.map(n => ({ id: n.id, label: n.label, sco
     "genderBalanceScore": "전체 성별 균형 점수 (1-10)",
     "difficultyBalanceScore": "학급간 지도 난이도 균형 점수 (1-10)",
     "relationshipScore": "관계 배치 적절성 점수 (1-10)",
+    "rankBalanceScore": "석차 분포 균형 점수 (1-10, 석차 데이터가 있는 경우)",
     "overallScore": "종합 점수 (1-10)",
     "strengths": ["강점1", "강점2"],
     "improvements": ["개선점1", "개선점2"],

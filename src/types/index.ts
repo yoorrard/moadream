@@ -99,6 +99,7 @@ export interface Student {
     custom_behavior?: string;
     custom_special_note?: string;
     memo?: string;
+    student_rank?: number;
     created_by: string;
     created_at: string;
 }

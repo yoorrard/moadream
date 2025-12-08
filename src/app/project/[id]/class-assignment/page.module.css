@@ -596,3 +596,14 @@
 .aiUsageHint.exhausted {
     color: #dc2626;
 }
+
+/* Student Rank Badge */
+.studentRank {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: #6366f1;
+    background: #eef2ff;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+}

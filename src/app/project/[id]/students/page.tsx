@@ -140,6 +140,7 @@ export default function StudentsPage() {
                                     <th>학급</th>
                                     <th>이름</th>
                                     <th>성별</th>
+                                    <th>석차</th>
                                     <th>유형</th>
                                     <th>행동특성</th>
                                     <th>특이사항</th>
@@ -149,7 +150,7 @@ export default function StudentsPage() {
                             </thead>
                             <tbody>
                                 {filteredStudents.length === 0 ? (
-                                    <tr><td colSpan={9} className={styles.emptyRow}>등록된 학생이 없습니다.</td></tr>
+                                    <tr><td colSpan={10} className={styles.emptyRow}>등록된 학생이 없습니다.</td></tr>
                                 ) : (
                                     filteredStudents.map((student) => {
                                         const levelInfo = getStudentLevelInfo(student);
@@ -163,6 +164,7 @@ export default function StudentsPage() {
                                                         {student.gender === 'male' ? '남' : '여'}
                                                     </span>
                                                 </td>
+                                                <td>{student.student_rank || '-'}</td>
                                                 <td>
                                                     <span className={`${styles.levelBadge} ${levelInfo.style}`}>{levelInfo.label}</span>
                                                 </td>
@@ -341,6 +343,7 @@ function StudentFormModal({ isOpen, onClose, student, projectId, currentClasses,
     const [customBehavior, setCustomBehavior] = useState('');
     const [customSpecialNote, setCustomSpecialNote] = useState('');
     const [memo, setMemo] = useState('');
+    const [studentRank, setStudentRank] = useState('');
     const [loading, setLoading] = useState(false);
     const { showToast } = useToast();
 
@@ -359,11 +362,13 @@ function StudentFormModal({ isOpen, onClose, student, projectId, currentClasses,
             setCustomBehavior(student.custom_behavior || '');
             setCustomSpecialNote(student.custom_special_note || '');
             setMemo(student.memo || '');
+            setStudentRank(student.student_rank?.toString() || '');
             setHasOtherBehavior(student.behaviors?.includes('other_behavior') || !!student.custom_behavior);
             setHasOtherNote(student.special_notes?.includes('other_note') || !!student.custom_special_note);
         } else {
             setStudentNumber(''); setName(''); setCurrentClass('1'); setGender('male');
             setBehaviors([]); setSpecialNotes([]); setCustomBehavior(''); setCustomSpecialNote(''); setMemo('');
+            setStudentRank('');
             setHasOtherBehavior(false); setHasOtherNote(false);
         }
     }, [student, isOpen]);
@@ -402,6 +407,7 @@ function StudentFormModal({ isOpen, onClose, student, projectId, currentClasses,
                 custom_behavior: hasOtherBehavior ? customBehavior.trim() : null,
                 custom_special_note: hasOtherNote ? customSpecialNote.trim() : null,
                 memo: memo.trim() || null,
+                student_rank: studentRank ? parseInt(studentRank) : null,
             };
             if (student) {
                 await supabase.from('students').update(data).eq('id', student.id);
@@ -424,6 +430,9 @@ function StudentFormModal({ isOpen, onClose, student, projectId, currentClasses,
             <form onSubmit={handleSubmit} className={styles.studentForm}>
                 <div className={styles.formRow}>
                     <Input label="번호 (필수)" type="number" value={studentNumber} onChange={(e) => setStudentNumber(e.target.value)} required fullWidth />
+                    <Input label="석차 (선택)" type="number" value={studentRank} onChange={(e) => setStudentRank(e.target.value)} placeholder="예: 1" fullWidth />
+                </div>
+                <div className={styles.formRow}>
                     <Input label="이름 (필수)" value={name} onChange={(e) => setName(e.target.value)} required fullWidth />
                 </div>
                 <div className={styles.formRow}>
@@ -515,6 +524,7 @@ function ExcelUploadModal({ isOpen, onClose, projectId, userId, onSuccess }: { i
             ['', '', '사용 가능 값: 리더십, 활동적, 학습우수, 폭력적, 수업방해, 게임몰입, 왕따가해, 왕따피해, 기타:내용'],
             ['특이사항(선택)', '학생의 특이사항', '쉼표로 구분하여 입력'],
             ['', '', '사용 가능 값: 알레르기, 장애, 다문화, 쌍둥이, 재적학생, 새터민, 기타:내용'],
+            ['석차(선택)', '학생의 석차', '숫자로 입력 (예: 1, 5, 10...)'],
             ['메모(선택)', '추가 참고 사항', '자유롭게 입력'],
             [''],
             ['📝 입력 예시'],
@@ -538,6 +548,7 @@ function ExcelUploadModal({ isOpen, onClose, projectId, userId, onSuccess }: { i
                 '이름': '(예시) 홍길동',
                 '학급': 1,
                 '성별': '남',
+                '석차(선택)': 3,
                 '행동특성(선택)': '리더십, 활동적',
                 '특이사항(선택)': '알레르기',
                 '메모(선택)': '반장 후보'
@@ -547,6 +558,7 @@ function ExcelUploadModal({ isOpen, onClose, projectId, userId, onSuccess }: { i
                 '이름': '(예시) 김영희',
                 '학급': 1,
                 '성별': '여',
+                '석차(선택)': 1,
                 '행동특성(선택)': '학습우수',
                 '특이사항(선택)': '쌍둥이',
                 '메모(선택)': ''
@@ -556,6 +568,7 @@ function ExcelUploadModal({ isOpen, onClose, projectId, userId, onSuccess }: { i
                 '이름': '(예시) 박철수',
                 '학급': 2,
                 '성별': '남',
+                '석차(선택)': '',
                 '행동특성(선택)': '활동적, 수업방해',
                 '특이사항(선택)': '기타:상담필요',
                 '메모(선택)': '집중력 향상 필요'
@@ -567,6 +580,7 @@ function ExcelUploadModal({ isOpen, onClose, projectId, userId, onSuccess }: { i
             { wch: 15 }, // 이름
             { wch: 6 },  // 학급
             { wch: 6 },  // 성별
+            { wch: 10 }, // 석차
             { wch: 25 }, // 행동특성
             { wch: 25 }, // 특이사항
             { wch: 30 }, // 메모
@@ -668,6 +682,7 @@ function ExcelUploadModal({ isOpen, onClose, projectId, userId, onSuccess }: { i
                     custom_behavior: customBehavior || null,
                     custom_special_note: customNote || null,
                     memo: (row['메모(선택)'] || row['메모'] || row['memo'] || '').toString() || null,
+                    student_rank: parseInt(row['석차(선택)'] || row['석차'] || row['rank'] || '0') || null,
                     created_by: userId,
                 };
             }).filter((s: any) => s.name);

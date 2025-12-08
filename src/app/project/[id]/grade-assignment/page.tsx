@@ -279,7 +279,7 @@ export default function GradeAssignmentPage() {
 
                 const classData = [
                     [`${classNumber}반 명단`],
-                    ['번호', '이름', '성별', '원 학급'],
+                    ['번호', '이름', '성별', '석차', '원 학급'],
                 ];
 
                 sortedStudents.forEach((s, index) => {
@@ -287,6 +287,7 @@ export default function GradeAssignmentPage() {
                         String(index + 1),
                         s.name,
                         s.gender === 'male' ? '남' : '여',
+                        s.student_rank ? String(s.student_rank) : '',
                         `${s.current_class}반`
                     ]);
                 });
@@ -298,7 +299,7 @@ export default function GradeAssignmentPage() {
             // 시트: 전체 학생 상세 정보
             const allStudentsData = [
                 ['전체 학생 상세 정보'],
-                ['진학학급', '이름', '성별', '원학급', '행동특성', '특이사항', '메모'],
+                ['진학학급', '이름', '성별', '석차', '원학급', '행동특성', '특이사항', '메모'],
             ];
 
             students
@@ -312,6 +313,7 @@ export default function GradeAssignmentPage() {
                         `${s.target_class}반`,
                         s.name,
                         s.gender === 'male' ? '남' : '여',
+                        s.student_rank ? String(s.student_rank) : '',
                         `${s.current_class}반`,
                         behaviors,
                         specialNotes,
@@ -816,6 +818,9 @@ function StudentCard({
                 <span className={`${styles.genderBadge} ${styles[student.gender]}`}>
                     {student.gender === 'male' ? '남' : '여'}
                 </span>
+                {student.student_rank && (
+                    <span className={styles.studentRank}>#{student.student_rank}</span>
+                )}
                 {student.behaviors?.slice(0, 2).map((b) => (
                     <span key={b} className={styles.behaviorTag}>
                         {BEHAVIOR_OPTIONS.find((o) => o.id === b)?.label}
