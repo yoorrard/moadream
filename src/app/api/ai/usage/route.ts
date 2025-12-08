@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
 
 const AI_ASSIGN_LIMIT = 1; // 프로젝트당 AI 자동배정 횟수 제한
 const AI_ANALYZE_LIMIT = 2; // 프로젝트당 AI 분석 횟수 제한
@@ -8,19 +8,26 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const projectId = searchParams.get('projectId');
-        const userId = searchParams.get('userId');
+        // userId from param is ignored/validated against session
 
-        if (!projectId || !userId) {
+        if (!projectId) {
             return NextResponse.json(
-                { error: 'projectId and userId are required' },
+                { error: 'projectId is required' },
                 { status: 400 }
             );
         }
 
-        const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
+        const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: '로그인이 필요합니다.' },
+                { status: 401 }
+            );
+        }
+
+        const userId = user.id;
 
         // AI 자동배정 사용 횟수 조회
         const { data: assignUsage, error: assignError } = await supabase

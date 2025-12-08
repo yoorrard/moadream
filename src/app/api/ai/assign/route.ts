@@ -1,19 +1,43 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { Student, Relationship } from '@/types';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
 
 const AI_ASSIGN_LIMIT = 1; // 프로젝트당 AI 자동배정 횟수 제한
 
 export async function POST(request: NextRequest) {
     try {
-        const { students, relationships, targetClasses, projectId, userId } = await request.json();
+        const { students, relationships, targetClasses, projectId } = await request.json();
 
-        // Supabase 클라이언트 생성 (서버 사이드)
-        const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
+        // Supabase 클라이언트 생성 (서버 사이드 - 쿠키 기반 인증)
+        const supabase = await createClient();
+
+        // 세션 사용자 확인
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: '로그인이 필요합니다.' },
+                { status: 401 }
+            );
+        }
+
+        const userId = user.id;
+
+        // 프로젝트 멤버십 확인 (보안 강화)
+        const { data: memberData, error: memberError } = await supabase
+            .from('project_members')
+            .select('project_id')
+            .eq('project_id', projectId)
+            .eq('user_id', userId)
+            .single();
+
+        if (memberError || !memberData) {
+            return NextResponse.json(
+                { error: '해당 프로젝트에 대한 접근 권한이 없습니다.' },
+                { status: 403 }
+            );
+        }
 
         // 사용 횟수 확인
         const { data: usageData, error: usageError } = await supabase
