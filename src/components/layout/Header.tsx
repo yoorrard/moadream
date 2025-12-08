@@ -25,7 +25,7 @@ export default function Header({ user, authUser, onLogout }: HeaderProps) {
             <div className={styles.container}>
                 <Link href="/" className={styles.logo}>
                     <div className={styles.logoIcon}>
-                        <Image src="/logo.jpg" alt="모아드림 로고" width={28} height={28} style={{ borderRadius: '8px' }} />
+                        <Image src="/logo.png" alt="모아드림 로고" width={28} height={28} style={{ objectFit: 'contain' }} />
                     </div>
                     <span className={styles.logoText}>모아드림</span>
                 </Link>

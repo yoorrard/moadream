@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { Button } from '@/components/common';
@@ -39,6 +40,9 @@ export default function LoginPage() {
             <div className={styles.leftPanel}>
                 <div className={styles.brandContent}>
                     <Link href="/" className={styles.logo}>
+                        <div className={styles.logoIcon}>
+                            <Image src="/logo.png" alt="모아드림 로고" width={40} height={40} style={{ objectFit: 'contain' }} />
+                        </div>
                         <span className={styles.logoText}>모아드림</span>
                     </Link>
                     <h1 className={styles.brandTitle}>

@@ -10,7 +10,7 @@ export default function Home() {
         <div className={styles.headerContent}>
           <div className={styles.logo}>
             <div className={styles.logoIcon}>
-              <Image src="/logo.jpg" alt="모아드림 로고" width={32} height={32} style={{ borderRadius: '8px' }} />
+              <Image src="/logo.png" alt="모아드림 로고" width={32} height={32} style={{ objectFit: 'contain' }} />
             </div>
             <span className={styles.logoText}>모아드림</span>
           </div>
@@ -172,7 +172,7 @@ export default function Home() {
           <div className={styles.footerTop}>
             <div className={styles.footerLogo}>
               <div className={styles.logoIcon}>
-                <Image src="/logo.jpg" alt="모아드림 로고" width={24} height={24} style={{ borderRadius: '6px' }} />
+                <Image src="/logo.png" alt="모아드림 로고" width={24} height={24} style={{ objectFit: 'contain' }} />
               </div>
               <span>모아드림</span>
             </div>
