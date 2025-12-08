@@ -1,30 +1,43 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 import { Student, Relationship } from '@/types';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
 
 const AI_ASSIGN_LIMIT = 1; // 프로젝트당 AI 자동배정 횟수 제한
 
 export async function POST(request: NextRequest) {
     try {
-        const { students, relationships, targetClasses, projectId, userId } = await request.json();
+        const { students, relationships, targetClasses, projectId } = await request.json();
 
-        // Supabase 클라이언트 생성 (서버 사이드)
-        const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xbxneekbhmabnpxulglt.supabase.co',
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhieG5lZWtiaG1hYm5weHVsZ2x0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ5MzMxMjcsImV4cCI6MjA4MDUwOTEyN30.xbHpdCxb29c7QZ6RTxrGaVp2Q0HjdRbxZe16b06QXZs'
-        );
+        // 1. 인증된 Supabase 클라이언트 생성
+        const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        // 사용 횟수 확인
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
+        if (!projectId) {
+            return NextResponse.json(
+                { error: 'ProjectId is required' },
+                { status: 400 }
+            );
+        }
+
+        // 2. 사용 횟수 확인 (RLS 적용된 상태에서 조회)
         const { data: usageData, error: usageError } = await supabase
             .from('ai_usage')
             .select('id')
             .eq('project_id', projectId)
-            .eq('user_id', userId)
+            .eq('user_id', user.id) // 세션 유저 ID 강제
             .eq('usage_type', 'assign');
 
         if (usageError) {
             console.error('Usage check error:', usageError);
+            throw usageError;
         }
 
         const usedCount = usageData?.length || 0;
@@ -79,17 +92,21 @@ ${JSON.stringify(relationships, null, 2)}
 
         const aiResult = JSON.parse(jsonMatch[0]);
 
-        // 사용 기록 저장
+        // 3. 사용 기록 저장 (인증된 사용자로 저장)
         const { error: insertError } = await supabase
             .from('ai_usage')
             .insert({
                 project_id: projectId,
-                user_id: userId,
+                user_id: user.id, // 세션 유저 ID 강제
                 usage_type: 'assign'
             });
 
         if (insertError) {
             console.error('Usage insert error:', insertError);
+            // 기록 저장 실패해도 결과는 반환? 아니면 에러? 
+            // 여기서는 사용자가 이득을 볼 수 없게 에러 처리가 안전하지만, AI 비용은 이미 발생함.
+            // 클라이언트에게 알리기 위해 에러를 로깅하고 진행하거나 에러를 던질 수 있음. 
+            // 일단 로깅만 하고 진행 (사용자 경험 우선)
         }
 
         return NextResponse.json({ ...aiResult, remaining: remaining - 1 });
