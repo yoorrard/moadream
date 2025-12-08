@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
 
         // AI 분석 요청
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
         const prompt = `
 당신은 초등학교 반편성 전문 컨설턴트입니다. 다음 반편성 결과를 분석하고 종합 평가를 제공해주세요.
