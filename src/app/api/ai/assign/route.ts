@@ -53,6 +53,13 @@ export async function POST(request: NextRequest) {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
         const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
+
+        // Anonymize student names to protect PII
+        const anonymizedStudents = students.map((s: Student, index: number) => ({
+            ...s,
+            name: `Student ${index + 1}`
+        }));
+
         const prompt = `
 당신은 초등학교 반편성 전문가입니다. 다음 학생들을 ${targetClasses}개의 진학 학급에 최적으로 배정해주세요.
 
@@ -64,7 +71,7 @@ export async function POST(request: NextRequest) {
 5. 특이사항 분산: 쌍둥이는 분리, 특별관리 학생은 분산합니다.
 
 ## 학생 데이터
-${JSON.stringify(students, null, 2)}
+${JSON.stringify(anonymizedStudents, null, 2)}
 
 ## 관계 데이터 (student_id와 target_student_id 사이의 관계)
 ${JSON.stringify(relationships, null, 2)}
