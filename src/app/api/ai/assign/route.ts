@@ -64,6 +64,17 @@ export async function POST(request: NextRequest) {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
         const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
+        // PII Masking: 실명과 학번을 제외하고 가공 데이터 생성
+        const maskedStudents = students.map((s: Student, index: number) => ({
+            id: s.id, // ID는 식별을 위해 유지
+            gender: s.gender,
+            behaviors: s.behaviors,
+            special_notes: s.special_notes,
+            current_class: s.current_class,
+            name: `학생 ${index + 1}`, // 가명 처리
+            // 제외: name, student_number, created_by, created_at, project_id, etc.
+        }));
+
         const prompt = `
 당신은 초등학교 반편성 전문가입니다. 다음 학생들을 ${targetClasses}개의 진학 학급에 최적으로 배정해주세요.
 
@@ -74,8 +85,8 @@ export async function POST(request: NextRequest) {
 4. 우호 관계 고려: friendly 관계는 가능하면 같은 학급에 배치하되, 필수는 아닙니다.
 5. 특이사항 분산: 쌍둥이는 분리, 특별관리 학생은 분산합니다.
 
-## 학생 데이터
-${JSON.stringify(students, null, 2)}
+## 학생 데이터 (개인정보 보호를 위해 마스킹됨)
+${JSON.stringify(maskedStudents, null, 2)}
 
 ## 관계 데이터 (student_id와 target_student_id 사이의 관계)
 ${JSON.stringify(relationships, null, 2)}
