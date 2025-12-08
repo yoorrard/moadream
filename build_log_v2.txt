@@ -1,0 +1,35 @@
+
+> moadream@0.1.0 build
+> next build
+
+ ??Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\?좎쁺??package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\?좎쁺??.gemini\antigravity\scratch\moadream\package-lock.json
+
+   ??Next.js 16.0.7 (Turbopack)
+   - Environments: .env.local
+
+ ??The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+ ??Compiled successfully in 2.6s
+   Running TypeScript ...
+   Collecting page data using 11 workers ...
+   Generating static pages using 11 workers (0/8) ...
+Error occurred prerendering page "/dashboard". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: @supabase/ssr: Your project's URL and API key are required to create a Supabase client!
+
+Check your Supabase project's API settings to find these values
+
+https://supabase.com/dashboard/project/_/settings/api
+    at <unknown> (https://supabase.com/dashboard/project/_/settings/api)
+    at <unknown> (C:\Users\?좎쁺??.gemini\antigravity\scratch\moadream\.next\server\chunks\ssr\_gemini_antigravity_scratch_moadream_71db4b2e._.js:58:63)
+    at aw (C:\Users\?좎쁺??.gemini\antigravity\scratch\moadream\.next\server\chunks\ssr\_gemini_antigravity_scratch_moadream_71db4b2e._.js:62:4539)
+    at ax (C:\Users\?좎쁺??.gemini\antigravity\scratch\moadream\.next\server\chunks\ssr\_gemini_antigravity_scratch_moadream_71db4b2e._.js:62:4718)
+    at p (C:\Users\?좎쁺??.gemini\antigravity\scratch\moadream\.next\server\chunks\ssr\[root-of-the-server]__9fb3a043._.js:1:8210) {
+  digest: '2920387031'
+}
+Export encountered an error on /dashboard/page: /dashboard, exiting the build.
+ 殊?Next.js build worker exited with code: 1 and signal: null

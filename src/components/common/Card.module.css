@@ -1,0 +1,71 @@
+.card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+}
+
+.padding-none {
+    padding: 0;
+}
+
+.padding-sm {
+    padding: var(--spacing-md);
+}
+
+.padding-md {
+    padding: var(--spacing-lg);
+}
+
+.padding-lg {
+    padding: var(--spacing-xl);
+}
+
+.hover:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-200);
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.clickable:active {
+    transform: scale(0.99);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: var(--spacing-md);
+}
+
+.headerContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.headerAction {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.content {
+    flex: 1;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
+    margin-top: var(--spacing-md);
+}

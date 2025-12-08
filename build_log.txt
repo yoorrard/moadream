@@ -1,0 +1,31 @@
+
+> moadream@0.1.0 build
+> next build
+
+ ??Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\?좎쁺??package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\?좎쁺??.gemini\antigravity\scratch\moadream\package-lock.json
+
+   ??Next.js 16.0.7 (Turbopack)
+   - Environments: .env.local
+
+ ??The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+ ??Compiled successfully in 2.5s
+   Running TypeScript ...
+Failed to compile.
+
+./src/app/project/[id]/students/page.tsx:112:14
+Type error: Property 'projectName' is missing in type '{ projectId: string; }' but required in type 'SidebarProps'.
+
+  110 |     return (
+  111 |         <div className={styles.container}>
+> 112 |             <Sidebar projectId={projectId} />
+      |              ^
+  113 |             <main className={styles.main}>
+  114 |                 <header className={styles.header}>
+  115 |                     <div>
+Next.js build worker exited with code: 1 and signal: null

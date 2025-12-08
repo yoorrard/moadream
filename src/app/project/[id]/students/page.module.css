@@ -1,0 +1,672 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg-secondary);
+}
+
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    gap: var(--spacing-md);
+    color: var(--text-secondary);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--primary-600);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.main {
+    flex: 1;
+    padding: var(--spacing-xl);
+    overflow-x: auto;
+    min-width: 0;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.subtitle {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+}
+
+.actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+/* Content Card */
+.contentCard {
+    padding: var(--spacing-lg);
+}
+
+/* Filter Section */
+.filterSection {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.filterRow {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.filterRow>div:first-child {
+    min-width: 150px;
+    max-width: 200px;
+}
+
+.studentCount {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--primary-700);
+    background: var(--primary-50);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-full);
+}
+
+/* Table Wrapper for responsiveness */
+.tableWrapper {
+    overflow-x: auto;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+    /* Slight increase for added column */
+}
+
+.table th,
+.table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.table th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--gray-50);
+}
+
+.table td {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.emptyRow {
+    text-align: center;
+    color: var(--text-tertiary);
+    padding: var(--spacing-xl) !important;
+}
+
+/* Gender Tags */
+.genderMale {
+    color: #3b82f6;
+}
+
+.genderFemale {
+    color: #ec4899;
+}
+
+/* Student Level Badges */
+.levelBadge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+}
+
+.level1 {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+}
+
+/* Very High Diff (Red) */
+.level2 {
+    background-color: #fff7ed;
+    color: #ea580c;
+    border: 1px solid #ffedd5;
+}
+
+/* High Diff (Orange) */
+.level3 {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
+}
+
+/* Moderate (Yellow) */
+.level4 {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #d1fae5;
+}
+
+/* Low (Green) */
+.level5 {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    border: 1px solid #dbeafe;
+}
+
+/* Good (Blue) */
+
+
+/* Tags */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+/* Tag Styles */
+.tagDanger {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+}
+
+.tagWarning {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
+}
+
+.tagSuccess {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    border: 1px solid #dbeafe;
+}
+
+.tagNeutral {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+}
+
+/* Memo Cell */
+.memoCell {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Action Buttons */
+.actionButtons {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: center;
+}
+
+/* Relationship Section */
+.relationSection {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-light);
+}
+
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* New Relationship Layout */
+.relationInputContainer {
+    display: flex;
+    align-items: flex-end;
+    /* Align bottom to match inputs */
+    gap: var(--spacing-md);
+    background: var(--gray-50);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--border-light);
+    flex-wrap: wrap;
+}
+
+.relationInputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Label to Input gap */
+}
+
+.inputLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-left: 2px;
+}
+
+.relationArrow {
+    font-size: 1.2rem;
+    color: var(--text-tertiary);
+    align-self: center;
+    padding-top: 16px;
+    /* Offset for label */
+}
+
+.targetSelectGroup {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.relTypeButtons {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.relTypeBtn {
+    padding: 0 var(--spacing-md);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 42px;
+    /* Fixed height to match Select inputs */
+    display: flex;
+    align-items: center;
+}
+
+.relTypeBtn.conflict {
+    border-color: #ef4444;
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.relTypeBtn.friendly {
+    border-color: #10b981;
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.addButtonWrapper {
+    margin-left: auto;
+    /* Push to right */
+    padding-bottom: 1px;
+}
+
+/* Relationship List */
+.relationListContainer {
+    margin-top: var(--spacing-md);
+}
+
+.listTitle {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.relationList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.emptyRelList {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-light);
+}
+
+.relationCard {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: shadow 0.2s;
+}
+
+.relationCard:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.cardConflict {
+    border-left: 4px solid #ef4444;
+}
+
+.cardFriendly {
+    border-left: 4px solid #10b981;
+}
+
+.relCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.75rem;
+}
+
+.relTypeIcon {
+    font-size: 1rem;
+    margin-right: 4px;
+}
+
+.relTypeText {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.relDeleteBtn {
+    border: none;
+    background: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.relDeleteBtn:hover {
+    color: #ef4444;
+    text-decoration: underline;
+}
+
+.relCardBody {
+    padding: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.studentName {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.relDirection {
+    color: var(--text-tertiary);
+}
+
+/* Student Form Modal - Keep existing styles or minimal updates */
+.studentForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.formLabel {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.radioGroup {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding-top: var(--spacing-sm);
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    font-size: 0.9375rem;
+}
+
+.checkboxGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.customInputFade {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.textarea {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--primary-500);
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
+}
+
+/* Upload Modal CSS (Keep existing styles) */
+.uploadContent,
+.templateSection,
+.uploadZone,
+.fileInput,
+.uploadLabel,
+.previewSection,
+.previewTable {}
+
+/* Placeholder for existing */
+.uploadContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.templateSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    background: var(--primary-50);
+    border-radius: var(--radius-md);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.templateSection p {
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+}
+
+.uploadZone {
+    border: 2px dashed var(--border-medium);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.uploadZone:hover {
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+}
+
+.fileInput {
+    display: none;
+}
+
+.uploadLabel {
+    display: block;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+}
+
+.previewSection {
+    padding: var(--spacing-md);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+}
+
+.previewSection h4 {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.previewTable {
+    width: 100%;
+    font-size: 0.8125rem;
+    border-collapse: collapse;
+}
+
+.previewTable th,
+.previewTable td {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--border-light);
+    text-align: left;
+}
+
+.previewTable th {
+    background: var(--gray-100);
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main {
+        padding: var(--spacing-md);
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .relationInputContainer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+
+    .relationArrow {
+        display: none;
+    }
+
+    /* Hide arrows on mobile stack */
+    .addButtonWrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .addButtonWrapper button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .checkboxGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .relationCard {
+        width: 100%;
+    }
+}
