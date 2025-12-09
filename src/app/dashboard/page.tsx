@@ -486,16 +486,15 @@ function JoinProjectModal({
         try {
             const supabase = createClient();
 
-            // 프로젝트 찾기
-            const { data: project, error: projectError } = await supabase
-                .from('projects')
-                .select('*')
-                .eq('code', code.toUpperCase())
-                .single();
+            // 프로젝트 찾기 (RPC 사용)
+            const { data: projectData, error: projectError } = await supabase
+                .rpc('get_project_by_code', { p_code: code.toUpperCase() });
 
-            if (projectError || !project) {
+            if (projectError || !projectData || projectData.length === 0) {
                 throw new Error('유효하지 않은 참여 코드입니다.');
             }
+
+            const project = projectData[0];
 
             // 이미 참여했는지 확인
             const { data: existing } = await supabase

@@ -82,13 +82,10 @@ export async function getProjectByCode(code: string): Promise<Project | null> {
     const supabase = await createClient();
 
     const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('code', code.toUpperCase())
-        .single();
+        .rpc('get_project_by_code', { p_code: code.toUpperCase() });
 
-    if (error) return null;
-    return data;
+    if (error || !data || data.length === 0) return null;
+    return data[0] as Project;
 }
 
 export async function getUserProjects(userId: string): Promise<Project[]> {
